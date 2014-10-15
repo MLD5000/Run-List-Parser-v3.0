@@ -39,9 +39,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    //QString runList;
 
     void getLastByte();
+
+    void removeSpaces();
+
+    void parseRunList();
+
+    int convertHex(QString);
 
 private slots:
 
@@ -59,10 +64,31 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QString runList,
-            lastRunByte;
 
-    int runListLength;
+    static const int LEN = 1000;
+
+    QString runList,
+            newRunList,
+            lastRunByte,
+            runHeaderL,
+            runHeaderR,
+            run[LEN],
+            runString,
+            jumpValueHex[LEN],
+            numClustersHex[LEN];
+
+
+
+    int runListLength,
+        headerIndex = 0,
+        index = 0,
+        index2 = 0,
+        clusterLengthBytes[LEN],
+        startingExtentBytes[LEN],
+        jumpValue[LEN],
+        numClusters[LEN],
+        mask;
+
 
 };
 
