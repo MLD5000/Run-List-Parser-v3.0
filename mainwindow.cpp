@@ -179,7 +179,12 @@ void MainWindow::on_actionAbout_triggered()
                                              "to identify data fragments of "
                                              "deleted files in NTFS systems.\n\n"
                                              "Copyright 2014.\n"
-                                             "Matt Danner, mattdanner.cf@gmail.com\n"));
+                                             "Matt Danner, mattdanner.cf@gmail.com\n"
+                                             "Created with Qt Creator v3.1.2 based on QT v5.3.1\n\n"
+                                             "THIS PROGRAM IS PROVIDED AS IS WITH NO WARRANTY OF ANY KIND "
+                                             "with no statements or guarantees as to its effectiveness or stability.\n\n"
+                                             "This software is released under the GNU Public License - \n"
+                                             "http://www.gnu.org/copyleft/gpl.html"));
 
 }
 

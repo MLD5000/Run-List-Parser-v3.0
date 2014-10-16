@@ -79,7 +79,7 @@ p, li { white-space: pre-wrap; }
      <string>Run List data including fragment clusters and sizes:</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -156,10 +156,6 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionCut"/>
-    <addaction name="actionCopy"/>
-    <addaction name="actionPaste"/>
-    <addaction name="separator"/>
     <addaction name="actionClear_Entry"/>
     <addaction name="actionClear_Output"/>
     <addaction name="actionClear_All"/>
@@ -171,7 +167,6 @@ p, li { white-space: pre-wrap; }
     </property>
     <addaction name="actionInstructions"/>
     <addaction name="actionAbout"/>
-    <addaction name="action_5"/>
    </widget>
    <addaction name="menuRun_List_Parser_V3_0"/>
    <addaction name="menuEdit"/>
@@ -254,7 +249,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="action_5">
    <property name="text">
-    <string> </string>
+    <string/>
    </property>
   </action>
  </widget>
