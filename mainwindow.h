@@ -48,6 +48,10 @@ public:
 
     int convertHex(QString);
 
+    void printRunValues();
+
+    void printFragments();
+
 private slots:
 
     void on_actionOpen_triggered();
@@ -87,7 +91,9 @@ private:
         startingExtentBytes[LEN],
         jumpValue[LEN],
         numClusters[LEN],
-        mask;
+        mask,
+        startCluster = 0,
+        endCluster;
 
 
 };

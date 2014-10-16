@@ -27,10 +27,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QTextStream>
-#include <sstream>
 #include <cmath>
-#include <string>
-#include <iostream>
 
 //--- Default constructor --------------------
 //--------------------------------------------
@@ -49,6 +46,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+
+
 //--- Opens text file data in the input text box, from context menu -
 //-------------------------------------------------------------------
 void MainWindow::on_actionOpen_triggered()
@@ -56,7 +56,8 @@ void MainWindow::on_actionOpen_triggered()
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), QString(),
                tr("Text Files (*.txt);;C++ Files (*.cpp *.h)"));
 
-       if (!fileName.isEmpty()) {
+       if (!fileName.isEmpty())
+       {
            QFile file(fileName);
            if (!file.open(QIODevice::ReadOnly)) {
                QMessageBox::critical(this, tr("Error"), tr("Could not open file"));
@@ -65,15 +66,18 @@ void MainWindow::on_actionOpen_triggered()
            QTextStream in(&file);
            ui->textEdit->setText(in.readAll());
            file.close();
+        }
 }
-}
+
+
+
 
 //--- Saves output data to text file from context menu -------
 //------------------------------------------------------------
 void MainWindow::on_actionSave_triggered()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), QString(),
-               tr("Text Files (*.txt);;C++ Files (*.cpp *.h)"));
+               tr("Word Document (*.doc);;C++ Files (*.cpp *.h)"));
 
        if (!fileName.isEmpty()) {
            QFile file(fileName);
@@ -88,6 +92,9 @@ void MainWindow::on_actionSave_triggered()
        }
 }
 
+
+
+
 //--- Button that executes parse action ------------------
 //--------------------------------------------------------
 void MainWindow::on_parseRunListButton_clicked()
@@ -96,15 +103,26 @@ void MainWindow::on_parseRunListButton_clicked()
     stream << ui->textEdit->toPlainText();
     stream.flush();
 
-    removeSpaces();
-
-    ui->textEdit_2->setPlainText(QString(newRunList));
-
     getLastByte();
 
+    removeSpaces();
+
+    parseRunList();
+
+    printRunValues();
+
+    printFragments();
+
     runList = "";
+    newRunList = "";
+    index2 = 0;
+    headerIndex = 0;
+    endCluster = 0;
 
 }
+
+
+
 
 //--- store input into string variable and outputs it to lower text box ---
 //-------------------------------------------------------------------------
@@ -114,14 +132,24 @@ void MainWindow::on_actionParse_Run_List_triggered()
     stream << ui->textEdit->toPlainText();
     stream.flush();
 
-    removeSpaces();
-
-    ui->textEdit_2->setPlainText(QString(newRunList));
-
     getLastByte();
 
+    removeSpaces();
+
+    parseRunList();
+
+    printRunValues();
+
+    printFragments();
+
     runList = "";
+    newRunList = "";
+    index2 = 0;
+    headerIndex = 0;
+    endCluster = 0;
 }
+
+
 
 //--- Loads instructions to information window from context menu ---------
 //------------------------------------------------------------------------
@@ -139,6 +167,9 @@ void MainWindow::on_actionInstructions_triggered()
     msgBox.exec();
 }
 
+
+
+
 //--- launches "about" window with general information ------------------------------------
 //-----------------------------------------------------------------------------------------
 void MainWindow::on_actionAbout_triggered()
@@ -153,20 +184,27 @@ void MainWindow::on_actionAbout_triggered()
 }
 
 
+
+
 //--- checks for run list end byte signature 00. ---------------------------
 //--------------------------------------------------------------------------
 void MainWindow::getLastByte()
 {
 
     runListLength = runList.length();
+
+    // gets last two bytes of run list
     lastRunByte = runList[runListLength - 2];
     lastRunByte += runList[runListLength - 1];
 
     if (lastRunByte != "00")
     {
         QMessageBox::warning(this, tr("Warning"), tr("NOTE - Last byte is not 00."));
+        runList += " 00";
     }
 }
+
+
 
 //--- Removes spaces from run list input -------
 //----------------------------------------------
@@ -182,8 +220,14 @@ void MainWindow::removeSpaces()
     }
 }
 
+
+//--- Parses bytes of run list string
+//--------------------------------------
 void MainWindow::parseRunList()
 {
+
+    ui->textEdit_2->clear();
+
     // store run header
     runHeaderL = newRunList[headerIndex];
     runHeaderR = newRunList[headerIndex+1];
@@ -212,19 +256,9 @@ void MainWindow::parseRunList()
             jumpValueHex[index2] += runString[j+1];
 
             // convert jump value string to integer and store in array
-            QString string = jumpValueHex[index2];
-            QTextStream ss(&string);
-            ss << hex << jumpValueHex[index2];
-            ss >> jumpValue[index2];
-            //ss.str(std::string());
-            //ss.clear();
 
-
-            //std::stringstream ss;
-            //ss << hex << jumpValueHex[index2];
-            //ss >> jumpValue[index2];
-            //ss.str(std::string());
-            //ss.clear();
+            bool ok;
+            jumpValue[index2] = jumpValueHex[index2].toInt(&ok, 16);
         }
 
         // extract number of clusters in the fragment and store in an array in little endian
@@ -234,16 +268,8 @@ void MainWindow::parseRunList()
             numClustersHex[index2] += runString[j+1];
 
             // convert number of cluster hex values to int
-            QString string = jumpValueHex[index2];
-            QTextStream ss(&string);
-            ss << hex << jumpValueHex[index2];
-            ss >> jumpValue[index2];
-
-            //std::stringstream ss;
-            //ss << hex << numClustersHex[index2];
-            //ss >> numClusters[index2];
-            //ss.str(std::string());
-            //ss.clear();
+            bool ok;
+            numClusters[index2] = numClustersHex[index2].toInt(&ok, 16);
 
             numClustersHex[index2] = "";    // clear array for use in next run list
         }
@@ -268,7 +294,10 @@ void MainWindow::parseRunList()
         runHeaderL = newRunList[headerIndex];
         runHeaderR = newRunList[headerIndex+1];
     }
+
 }
+
+
 
 // this function converts the run header values to integers
 int MainWindow::convertHex(QString runHeader)
@@ -294,4 +323,76 @@ int MainWindow::convertHex(QString runHeader)
     else if (runHeader == "9") return 9;
 
     else return 0;
+}
+
+
+
+//--- prints run values
+//----------------------
+void MainWindow::printRunValues()
+{
+    ui->textEdit_2->append("Individual Runs: \n"
+                           "-------------------------------------\n"
+                           "-------------------------------------\n");
+
+
+    for (int j = 0; j < index2; j++)
+    {
+        ui->textEdit_2->append("Run " + QString::number(j + 1) + ": ");
+        //ui->textEdit_2->append("-------------------------------------");
+        ui->textEdit_2->append("Run: " + run[j]);
+
+        run[j] = "";
+
+        if (j == 0)
+        {
+            ui->textEdit_2->append("Starting Cluster in Hex: " + jumpValueHex[j]);
+            ui->textEdit_2->append("Starting Cluster in Dec: " + QString::number(jumpValue[j]) + "\n");
+        }
+
+        else
+        {
+            ui->textEdit_2->append("Jump Value in Hex: " + jumpValueHex[j]);
+            ui->textEdit_2->append("Jump Value in Dec: " + QString::number(jumpValue[j]) + "\n");
+        }
+
+        jumpValueHex[j] = "";
+    }
+
+}
+
+//--- Prints fragments for run list
+//------------------------------------
+void MainWindow::printFragments()
+{
+    ui->textEdit_2->append("File Fragments: \n"
+                           "-------------------------------------\n"
+                           "-------------------------------------\n");
+
+    startCluster = jumpValue[0];
+
+    for (int j = 0; j < index2; j++)
+    {
+        ui->textEdit_2->append("Fragment " + QString::number(j + 1) + ": ");
+
+        if (j == 0)
+        {
+            endCluster = jumpValue[j];
+            endCluster += numClusters[j];
+            ui->textEdit_2->append("Clusters " + QString::number(jumpValue[j]) + " - " + QString::number(endCluster) + "\n");
+            ui->textEdit_2->append("Total clusters in fragment: " + QString::number(numClusters[j]) + "\n");
+        }
+
+        else
+        {
+            startCluster += jumpValue[j];
+            endCluster = startCluster + numClusters[j];
+            ui->textEdit_2->append("Clusters " + QString::number(startCluster) + " - " + QString::number(endCluster) + "\n");
+            ui->textEdit_2->append("Total clusters in fragment: " + QString::number(numClusters[j]) + "\n");
+        }
+
+        jumpValue[j] = 0;
+        numClusters[j] = 0;
+    }
+
 }
