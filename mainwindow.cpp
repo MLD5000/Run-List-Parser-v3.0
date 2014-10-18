@@ -147,6 +147,9 @@ void MainWindow::on_actionParse_Run_List_triggered()
     index2 = 0;
     headerIndex = 0;
     endCluster = 0;
+
+
+
 }
 
 
@@ -261,7 +264,6 @@ void MainWindow::parseRunList()
             jumpValueHex[index2] += runString[j+1];
 
             // convert jump value string to integer and store in array
-
             bool ok;
             jumpValue[index2] = jumpValueHex[index2].toInt(&ok, 16);
         }
@@ -275,8 +277,6 @@ void MainWindow::parseRunList()
             // convert number of cluster hex values to int
             bool ok;
             numClusters[index2] = numClustersHex[index2].toInt(&ok, 16);
-
-            numClustersHex[index2] = "";    // clear array for use in next run list
         }
 
 
@@ -344,7 +344,6 @@ void MainWindow::printRunValues()
     for (int j = 0; j < index2; j++)
     {
         ui->textEdit_2->append("Run " + QString::number(j + 1) + ": ");
-        //ui->textEdit_2->append("-------------------------------------");
         ui->textEdit_2->append("Run: " + run[j]);
 
         run[j] = "";
@@ -398,6 +397,7 @@ void MainWindow::printFragments()
 
         jumpValue[j] = 0;
         numClusters[j] = 0;
+        numClustersHex[j] = "";
     }
 
 }

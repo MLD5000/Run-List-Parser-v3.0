@@ -44,3 +44,5 @@ Temporary Items
 
 RunListParserv3-0.pro
 RunListParserv3-0.pro.user
+*.qrc
+*.png
