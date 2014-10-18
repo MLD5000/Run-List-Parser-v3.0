@@ -12,3 +12,6 @@ Run-List-Parser-v3.0
     lost or deleted files during computer forensic analysis.
     
     Version 3.0 is run with a GUI.
+    
+    ##Screenshot
+    ![Image](<http://i.imgur.com/Y8C7kts.png>)
