@@ -14,5 +14,5 @@ Run-List-Parser-v3.0
     Version 3.0 is run with a GUI.
     
     ##Screenshots
-    ![Image](<http://i.imgur.com/Y8C7kts.png>)
+    ![Y8C7kts](<http://i.imgur.com/Y8C7kts.png>)
     
