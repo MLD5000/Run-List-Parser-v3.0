@@ -60,6 +60,8 @@ private slots:
 
     void on_actionInstructions_triggered();
 
+    void runListEmpty();
+
     void on_actionAbout_triggered();
 
     void on_actionParse_Run_List_triggered();

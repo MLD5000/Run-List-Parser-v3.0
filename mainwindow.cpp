@@ -47,8 +47,6 @@ MainWindow::~MainWindow()
 }
 
 
-
-
 //--- Opens text file data in the input text box, from context menu -
 //-------------------------------------------------------------------
 void MainWindow::on_actionOpen_triggered()
@@ -92,9 +90,6 @@ void MainWindow::on_actionSave_triggered()
        }
 }
 
-
-
-
 //--- Button that executes parse action ------------------
 //--------------------------------------------------------
 void MainWindow::on_parseRunListButton_clicked()
@@ -103,21 +98,28 @@ void MainWindow::on_parseRunListButton_clicked()
     stream << ui->textEdit->toPlainText();
     stream.flush();
 
-    getLastByte();
+    if(runList.isEmpty()) {
+        runListEmpty();
+    }
 
-    removeSpaces();
+    else{
 
-    parseRunList();
+        getLastByte();
 
-    printRunValues();
+        removeSpaces();
 
-    printFragments();
+        parseRunList();
 
-    runList = "";
-    newRunList = "";
-    index2 = 0;
-    headerIndex = 0;
-    endCluster = 0;
+        printRunValues();
+
+        printFragments();
+
+    }
+        runList = "";
+        newRunList = "";
+        index2 = 0;
+        headerIndex = 0;
+        endCluster = 0;
 
 }
 
@@ -132,26 +134,39 @@ void MainWindow::on_actionParse_Run_List_triggered()
     stream << ui->textEdit->toPlainText();
     stream.flush();
 
-    getLastByte();
+    if(runList.isEmpty()) {runListEmpty();}
 
-    removeSpaces();
+    else{
 
-    parseRunList();
+        getLastByte();
 
-    printRunValues();
+        removeSpaces();
 
-    printFragments();
+        parseRunList();
 
-    runList = "";
-    newRunList = "";
-    index2 = 0;
-    headerIndex = 0;
-    endCluster = 0;
+        printRunValues();
 
+        printFragments();
 
-
+    }
+        runList = "";
+        newRunList = "";
+        index2 = 0;
+        headerIndex = 0;
+        endCluster = 0;
 }
 
+
+//--- If no run list has been entered this message will appear ------------
+//-------------------------------------------------------------------------
+void MainWindow::runListEmpty(){
+
+
+    ui->textEdit_2->clear();
+
+    ui->textEdit_2->append("No run list to process.\nEnter a run list to parse.");
+
+}
 
 
 //--- Loads instructions to information window from context menu ---------
@@ -171,8 +186,6 @@ void MainWindow::on_actionInstructions_triggered()
 }
 
 
-
-
 //--- launches "about" window with general information ------------------------------------
 //-----------------------------------------------------------------------------------------
 void MainWindow::on_actionAbout_triggered()
@@ -183,7 +196,7 @@ void MainWindow::on_actionAbout_triggered()
                                              "deleted files in NTFS systems.\n\n"
                                              "Copyright 2014.\n"
                                              "Matt Danner, mattdanner.cf@gmail.com\n"
-                                             "Created with Qt Creator v3.1.2 based on QT v5.3.1\n\n"
+                                             "Created with Qt Creator\n\n"
                                              "THIS PROGRAM IS PROVIDED AS IS WITH NO WARRANTY OF ANY KIND "
                                              "with no statements or guarantees as to its effectiveness or stability.\n\n"
                                              "This software is released under the GNU Public License - \n"
@@ -307,6 +320,7 @@ void MainWindow::parseRunList()
 // this function converts the run header values to integers
 int MainWindow::convertHex(QString runHeader)
 {
+
     if (runHeader == "0") return 0;
 
     else if (runHeader == "1") return 1;
@@ -329,7 +343,6 @@ int MainWindow::convertHex(QString runHeader)
 
     else return 0;
 }
-
 
 
 //--- prints run values
